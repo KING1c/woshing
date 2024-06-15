@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">WashCar</string>
+    <string name="username">имя пользователя</string>
+    <string name="password">пароль</string>
+    <string name="login">Вход</string>
+    <string name="toLogin">Войти</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="registration">Регистрация</string>
+    <string name="toRegistration">Зарегистрироваться</string>
+    <string name="todo">TODO</string>
+    <string name="myOrder">мои заказы</string>
+    <string name="orders">Заказы</string>
 </resources>

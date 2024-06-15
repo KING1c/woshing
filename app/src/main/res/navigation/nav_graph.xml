@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/createServiceFragment">
+
+    <fragment
+        android:id="@+id/listOrderFragment"
+        android:name="com.example.myapplication.fragments.ListOrderFragment"
+        android:label="fragment_list_order"
+        tools:layout="@layout/fragment_list_order" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.myapplication.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_listOrderFragment"
+            app:destination="@id/listOrderFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_createServiceFragment"
+            app:destination="@id/createServiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.myapplication.fragments.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.myapplication.fragments.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
+    <fragment
+        android:id="@+id/createServiceFragment"
+        android:name="com.example.myapplication.fragments.CreateServiceFragment"
+        android:label="fragment_create_service"
+        tools:layout="@layout/fragment_create_service" />
+</navigation>
