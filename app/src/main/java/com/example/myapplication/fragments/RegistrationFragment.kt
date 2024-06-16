@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentRegistrationBinding
+import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,12 +46,22 @@ class RegistrationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         with(binding){
             buttonLogin.setOnClickListener {
-                it.findNavController().popBackStack()
-            }
-            buttonConfirm.setOnClickListener {
-                it.findNavController().popBackStack()
-            }
 
+                it.findNavController().popBackStack()            }
+            buttonConfirm.setOnClickListener {
+                if (editTextPassword1.text.toString() == editTextPassword2.text.toString()) {
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(
+                        editTextName.text.toString(),
+                        editTextPassword1.text.toString()
+                    ).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                it.findNavController().popBackStack()
+                            } else {
+                                // Обработка ошибки
+                            }
+                        }
+                }
+            }
         }
     }
 

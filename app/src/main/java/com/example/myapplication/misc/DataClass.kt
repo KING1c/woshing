@@ -1,28 +1,30 @@
 package com.example.myapplication.misc
 
+import java.sql.Time
+import java.time.LocalDateTime
 import java.util.Date
 data class DateClass(
     var orders:List<Order>,
-    val users:List<User>,
-    val services:List<Service>
+    var user:User,
+    var services:List<Service>
 )
 data class User(
-    val id:Long = 0,
+    val uid:String = "",
     val name:String = "",
     val password:String = "",
     var isAdmin:Boolean = false
 )
 data class Order(
     val id:Long = 0,
-    val user: User,
-    val service: Service,
-    var statusOrder: StatusOrder,
-    val timeStart:Date,
+    val uidUser: String = "",
+    val service: Service = Service("",0,0),
+    var statusOrder: StatusOrder = StatusOrder.WAITING,
+    var timeStart:String = LocalDateTime.now().toString(),
 )
 data class Service(
-    val name: String,
-    val cast:Int,
-    val time:Int,
+    val name: String = "",
+    val cast:Int = 0,
+    val time:Int = 0,
 )
 enum class StatusOrder{
     DONE,

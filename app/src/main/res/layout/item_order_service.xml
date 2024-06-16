@@ -8,6 +8,7 @@
     android:layout_marginVertical="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerBackground"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:paddingVertical="15dp"

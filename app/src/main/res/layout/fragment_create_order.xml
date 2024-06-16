@@ -59,12 +59,12 @@
             android:layout_marginBottom="40dp"
             android:layout_marginHorizontal="20dp"
             android:inputType="text"
-            app:layout_constraintBottom_toTopOf="@id/editTextCast"
+            app:layout_constraintBottom_toTopOf="@id/editTextPassword1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
-            android:id="@+id/editTextCast"
+            android:id="@+id/editTextPassword1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -75,9 +75,9 @@
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="@id/editTextName"
             app:layout_constraintStart_toStartOf="@id/editTextName"
-            app:layout_constraintBottom_toTopOf="@id/editTextTime" />
+            app:layout_constraintBottom_toTopOf="@id/editTextPassword2" />
         <EditText
-            android:id="@+id/editTextTime"
+            android:id="@+id/editTextPassword2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -87,8 +87,8 @@
             android:hint="продолжительность"
             android:inputType="time"
             android:textSize="22sp"
-            app:layout_constraintEnd_toEndOf="@id/editTextCast"
-            app:layout_constraintStart_toStartOf="@id/editTextCast"
+            app:layout_constraintEnd_toEndOf="@id/editTextPassword1"
+            app:layout_constraintStart_toStartOf="@id/editTextPassword1"
             app:layout_constraintBottom_toTopOf="@id/button_confirm" />
         <Button
             android:id="@+id/button_confirm"

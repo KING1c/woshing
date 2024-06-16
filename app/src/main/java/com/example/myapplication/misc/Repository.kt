@@ -3,37 +3,45 @@ package com.example.myapplication.misc
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Firebase
-import com.google.firebase.database.database
+import com.google.firebase.auth.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 
 interface ListenerRepository {
-    fun getAll(): LiveData<List<Order>>
-    // для заказов
+    fun getAll(): MutableLiveData<DateClass>
     fun setOrder(orders:List<Order>)
-    fun addOrder(user:User, service: Service, date: Date)
     fun setStatus(idOrder: Long, statusOrder: StatusOrder)
-
-
-
+    fun loadUser()
+    fun loadOrder()
+    fun loadServices()
+    fun addOrder(service: Service, date: Date)
 }
 class RepositoryInMemoryImpl(context: Context): ListenerRepository {
     private var dataClass = DateClass(
         orders = listOf(),
-        users = listOf(),
+        user = User(),
         services = listOf()
     )
     private val data = MutableLiveData(dataClass)
-    private val database = Firebase.database.reference
-    private fun sync() {
+    private var databaseUsersReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("users")
+    private var databaseOrdersReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("orders")
+    private var databaseServicesReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("services")
+    private val uid:String = Firebase.auth.currentUser!!.uid
+    public fun sync() {
         data.value = dataClass
-        database.removeValue()
-        database.setValue(dataClass)
+        databaseUsersReference.child(uid).setValue(dataClass.user)
+        databaseOrdersReference.child(uid).removeValue()
+        databaseOrdersReference.child(uid).setValue(dataClass.orders)
     }
-    override fun getAll(): LiveData<List<Order>> = data
+    override fun getAll() = data
     override fun setOrder(orders: List<Order>) {
         dataClass.orders = orders
         sync()
@@ -48,6 +56,58 @@ class RepositoryInMemoryImpl(context: Context): ListenerRepository {
         sync()
     }
 
+        override fun loadUser() {
+            val listener = object : ValueEventListener {
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    dataSnapshot.children.mapNotNull { it.getValue(User::class.java) }.forEach{
+                        if (it.uid == uid)
+                            dataClass.user = it
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle error
+                }
+            }
+            databaseUsersReference.addValueEventListener(listener)
+            data.value = dataClass
+
+        }
+    override fun loadOrder() {
+        val listener = object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (orderSnapshot in dataSnapshot.child(uid).children){
+                     dataClass.orders = dataClass.orders.plus(orderSnapshot.getValue(Order::class.java)!!)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle error
+            }
+        }
+        databaseOrdersReference.addValueEventListener(listener)
+
+        data.value = dataClass
+    }
+    override fun loadServices() {
+        val listener = object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNull { it.getValue(Service::class.java) }.forEach{
+                        dataClass.services = dataClass.services.plus(it)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle error
+            }
+        }
+        databaseServicesReference.addValueEventListener(listener)
+        data.value = dataClass
+    }
+
     private fun getNewId():Long {
         var id = 1L
         dataClass.orders.forEach {
@@ -56,13 +116,13 @@ class RepositoryInMemoryImpl(context: Context): ListenerRepository {
         return id
     }
 
-    override fun addOrder(user: User,service: Service, date: Date) {
+    override fun addOrder(service: Service, date: Date) {
         dataClass.orders += listOf(Order(
             id = getNewId(),
-            user = user,
+            uidUser = uid,
             service = service,
             statusOrder = StatusOrder.WAITING,
-            timeStart = Calendar.getInstance().time
+            timeStart = LocalDateTime.now().toString()
             ))
         sync()
     }
@@ -72,10 +132,8 @@ class RepositoryViewModal(application: Application): AndroidViewModel(applicatio
 
     private val repository: RepositoryInMemoryImpl = RepositoryInMemoryImpl(application)
     val data = repository.getAll()
-    fun setStudent(washServices: List<WashService>) = repository.setStudents(washServices)
-    fun addStudent(name: String, password: String) = repository.addStudent(name,password)
-    fun addSubject(idStudent: Long, name: String) = repository.addSubject(idStudent,name)
-    fun removeStudent(idStudent: Long) = repository.removeStudent(idStudent)
-    fun removeSubject(idSubject: Long, idStudent: Long) =repository.removeSubject(idSubject,idStudent)
-    fun setRating(idSubject: Long, idStudent: Long, rating: Int) =repository.setRating(idSubject,idStudent,rating)
+    fun addOrder(service: Service, date:Date) = repository.addOrder(service,date)
+    fun loadUser() = repository.loadUser()
+    fun loadOrder() = repository.loadOrder()
+    fun loadServices() = repository.loadServices()
 }
